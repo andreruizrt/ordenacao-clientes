@@ -1,9 +1,9 @@
 #include "arquivo.h"
 
-#define LOG_OPERACOES_PATH "log-operacoes.txt"
-#define LOG_DADOS_PATH "log-conteudo-lista.txt"
+#define LOG_OPERACOES_PATH "log/log-operacoes.txt"
+#define LOG_DADOS_PATH "log/log-conteudo-lista.txt"
 #define OPERACOES_PATH "operacoes.txt"
- 
+
 int escrever_arquivo_log(char *operacao, int qnt_nodos)
 {
     FILE *arq;
@@ -125,6 +125,8 @@ void comparar_funcoes(LSE *lista, char *operacao, Cliente c)
 
 void ler_arquivo(LSE *lista)
 {
+    printf("[*] Carregando arquivo de operacoes\n");
+
     FILE *arq;
     const char *OPERACOES_FORMAT = "%[a-zA-Z _],%d ,%[a-zA-Z ],%d";
     char linha[100];
@@ -138,7 +140,7 @@ void ler_arquivo(LSE *lista)
 
     if (arq == NULL)
     {
-        printf("Problemas para abrir o arquivo!");
+        printf("Problemas para abrir o arquivo!\n");
         return;
     }
 
@@ -151,4 +153,6 @@ void ler_arquivo(LSE *lista)
 
         comparar_funcoes(lista, operacao, c);
     }
+
+    printf("---------- Fim da Leitura ----------\n\n");
 }

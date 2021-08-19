@@ -7,16 +7,16 @@
 int print_menu()
 {
 	printf("1 - Cadastrar cliente\n2 - Ordenar Lista pelo CPF\n");
-	printf("3 - Desalocar Lista\n4 - Sair\n");
-	printf("Escolha a opcao: ");
+	printf("3 - Imprimir lista toda\n4 - Desalocar Lista\n");
+	printf("5 - Sair\nEscolha a opcao: ");
 }
 
 // Compare the input with the functions.
 int menu(LSE *lista)
 {
-	int option;
+	int option = 1;
 
-	while (1)
+	while (option != 0)
 	{
 		print_menu();
 		scanf("%d", &option);
@@ -42,14 +42,18 @@ int menu(LSE *lista)
 
 			break;
 		case 3:
+			//Imprimir lista toda
+			printf("[*] Imprimindo lista");
+			imprimirDadosDaListaLSE(lista);
+		case 4:
 			//Desalocar lista
 			printf("[*] Desalocando lista\n");
-
+			// desalocarListaLSE(lista);
 			break;
-		case 4:
+		case 5:
 			//opcao de sair
 			printf("[*] Saindo...\n");
-			exit(0);
+			option = 0;
 			break;
 
 		default:
@@ -64,10 +68,12 @@ int main()
 	LSE *lista;
 	lista = criarLSE();
 
-	menu(lista);
-
 	ler_arquivo(lista);
 
+	menu(lista);
+
+	escrever_arquivo_log_dados(lista);
+	
 	desalocarListaLSE(lista);
 
 	return 0;
