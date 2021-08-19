@@ -1,5 +1,5 @@
-#include "cliente.h"
 #include <stdio.h>
+#include "cliente.h"
 
 Cliente criarCliente()
 {

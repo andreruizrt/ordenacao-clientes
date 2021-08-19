@@ -1,169 +1,74 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "cliente.h"
 #include "LSE.h"
 
-int escrever_arquivo_log(char *operacao, int qnt_nodos)
+// Show the menu option to the user.
+int print_menu()
 {
-    FILE *arq;
-    arq = fopen("log-operacoes.txt", "a");
-    if (arq != NULL)
-    {
-        fprintf(arq, "LSE,%s,%i\n", operacao, qnt_nodos);
-    }
-
-    fclose(arq);
-    return 0;
+	printf("1 - Cadastrar cliente\n2 - Ordenar Lista pelo CPF\n");
+	printf("3 - Desalocar Lista\n4 - Sair\n");
+	printf("Escolha a opcao: ");
 }
 
-int escrever_arquivo_log_erro(char *mensagem_erro, char *operacao)
+// Compare the input with the functions.
+int menu(LSE *lista)
 {
-    FILE *arq;
-    arq = fopen("log-operacoes.txt", "a");
-    if (arq != NULL)
-    {
-        fprintf(arq, "ERRO,LSE,%s,%s\n", operacao, mensagem_erro);
-    }
+	int option;
 
-    fclose(arq);
-    return 0;
-}
+	while (1)
+	{
+		print_menu();
+		scanf("%d", &option);
 
-int escrever_arquivo_log_dados(LSE *lista)
-{
-    printf("[*] Salvando arquivo de dados\n");
-    FILE *arq;
-    arq = fopen("log-conteudo-lista.txt", "a");
+		switch (option)
+		{
+		case 1:
+			// cadastro de clientes(final e inicio da lista);
+			printf("[*] Cadastrar cliente\n");
 
-    if (arq == NULL)
-    {
-        return 1;
-    }
+			if (lista == NULL)
+			{
+				lista = criarLSE();
+			}
 
-    No *p = lista->inicio;
-    while (p != NULL)
-    {
-        No *t = p->proximo;
-        fprintf(arq, "LSE,%s,CPF:%d\n", p->cliente.nome, p->cliente.cpf);
-        p = t;
-    }
+			Cliente c = criarCliente();
+			inserirFinalLSE(lista, c);
 
-    fclose(arq);
-    return 0;
-}
+			break;
+		case 2:
+			//Ordenar lista
+			printf("[*] Ordenando Lista de Cliente pelo CPF\n");
 
-void comparar_funcoes(LSE *lista, char *operacao, Cliente c)
-{
-    if (strcmp(operacao, "inserir_inicio") == 0)
-    {
-        printf("Inserindo no Inicio...\n");
-        inserirInicioLSE(lista, c);
-        escrever_arquivo_log(operacao, 1);
-    }
-    else
-    {
-        if (strcmp(operacao, "inserir_final") == 0)
-        {
-            printf("Inserindo no Final...\n");
-            int qnt_nodos = inserirFinalLSE(lista, c);
-            if (qnt_nodos == 1)
-            {
-                escrever_arquivo_log_erro("Erro ao inserir no final!", operacao);
-            }
-            else
-            {
-                escrever_arquivo_log(operacao, qnt_nodos);
-            }
-        }
-        else
-        {
-            if (strcmp(operacao, "remover") == 0)
-            {
-                printf("[*] Removendo Cliente pelo CPF:\n");
+			break;
+		case 3:
+			//Desalocar lista
+			printf("[*] Desalocando lista\n");
 
-                int result = 1;
+			break;
+		case 4:
+			//opcao de sair
+			printf("[*] Saindo...\n");
+			exit(0);
+			break;
 
-                // int result = removerClienteLSE(lista, c.id);
-
-                if (result == 1)
-                {
-                    escrever_arquivo_log_erro("Nao foi possivel remover o cliente!", operacao);
-                }
-            }
-            else
-            {
-                if (strcmp(operacao, "buscar") == 0)
-                {
-                    printf("[*] Buscando Cliente pelo CPF\n");
-
-                    int result = buscarClienteLSE(lista, c.id);
-                    
-                    if (result == 1)
-                    {
-                        escrever_arquivo_log_erro("Usuario nao encontrado!", operacao);
-                    }
-                }
-                else
-                {
-                    if (strcmp(operacao, "obter_tamanho_lista") == 0)
-                    {
-                        printf("[*] Obtendo tamanho da Lista\n");
-
-                        int tamanho = obterTamanhoListaLSE(lista);
-                        printf("O tamanho atual da lista e: %d\n", tamanho);
-                    }
-                    else
-                    {
-                        escrever_arquivo_log_erro("Operacao nao cadastrada", operacao);
-                    }
-                }
-            }
-        }
-    }
-}
-
-void ler_arquivo(LSE *lista)
-{
-    FILE *arq;
-    const char *OPERACOES_FORMAT = "%[a-zA-Z _],%d ,%[a-zA-Z ],%d";
-    char linha[100];
-    char *result;
-    int i;
-
-    char operacao[100];
-    Cliente c;
-
-    arq = fopen("operacoes.txt", "rt");
-
-    if (arq == NULL)
-    {
-        printf("Problemas para abrir o arquivo!");
-        return;
-    }
-
-    i = 1;
-    while (!feof(arq))
-    {
-        result = fgets(linha, 100, arq);
-
-        sscanf(linha, OPERACOES_FORMAT, operacao, &c.id, c.nome, &c.cpf);
-
-        comparar_funcoes(lista, operacao, c);
-    }
+		default:
+			printf("Opcao Invalida!\n");
+			break;
+		}
+	}
 }
 
 int main()
 {
-    LSE *lista;
-    lista = criarLSE();
+	LSE *lista;
+	lista = criarLSE();
 
-    ler_arquivo(lista);
+	menu(lista);
 
-    escrever_arquivo_log_dados(lista);
+	ler_arquivo(lista);
 
-    desalocarListaLSE(lista);
+	desalocarListaLSE(lista);
 
-    return 0;
+	return 0;
 }
