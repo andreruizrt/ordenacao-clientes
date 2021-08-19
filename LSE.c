@@ -28,6 +28,7 @@ int desalocarListaLSE(LSE *lista)
         free(atual);
         atual = t;
     }
+
     return 0;
 }
 
@@ -83,6 +84,7 @@ int inserirInicioLSE(LSE *lista, Cliente c)
 // • Inserção de clientes no final da lista
 int inserirFinalLSE(LSE *lista, Cliente c)
 {
+
     No *novo = (No *)malloc(sizeof(No));
     int counter = 0;
 
@@ -93,6 +95,13 @@ int inserirFinalLSE(LSE *lista, Cliente c)
 
     novo->cliente = c;
     novo->proximo = NULL;
+
+    if (lista->inicio == NULL)
+    {
+        lista->inicio = novo;
+        printf("[*] Cliente inserido!\n\n");
+        return 0;
+    }
 
     No *aux = lista->inicio;
     while (aux->proximo != NULL)
